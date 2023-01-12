@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet" />
+
+
+<title>Lista de Elementos</title>
+
+<script type="text/javascript">
+	function clearSearch() {
+		window.location = "[[@{/}]]";
+	}
+</script>
+
+</head>
+<body>
+
+	<div class="container">
+		<nav class="navbar navbar-dark bg-primary">
+			<form class="form-inline" th:action="@{/}">
+			
+				<a th:href="@{/listElement}"><button type="button" class="btn btn-primary">Listado</button></a>
+				<a th:href="@{/addElement}"><button type="button"
+						class="btn btn-primary">Añadir</button></a>
+				<button type="button" class="btn btn-primary">
+					<span th:text=${#authentication.name}></span>
+				</button>
+
+				Filter: <input class="text-primary" type="text" name="stringFind" id="stringFind"
+					size="50" th:value="${stringFind}" /> &nbsp; <a th:href="@{/}"><input
+					type="submit" value="Search" /></a> &nbsp; <input type="button"
+					value="Clear" id="btnClear" onclick="clearSearch()" /> <a
+					th:href="@{/logout}"><button type="button"
+						class="btn btn-primary">Log Out</button></a>
+			</form>
+		</nav>
+
+
+		<div class="starter-template">
+			<h1>Listado de Elementos</h1>
+			<div>
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th><a
+								th:href="@{'/listElement?sortField=name&pageNumber=' + ${currentPage}} + '&stringFind=' + ${stringFind}">NOMBRE</a></th>
+							<th><a
+								th:href="@{'/listElement?sortField=description&pageNumber=' + ${currentPage}} + '&stringFind=' + ${stringFind}">DESCRIPCIÓN</a></th>
+							<th><a
+								th:href="@{'/listElement?sortField=price&pageNumber=' + ${currentPage}} + '&stringFind=' + ${stringFind}">PRECIO</a></th>
+							<th><a
+								th:href="@{'/listElement?sortField=stock&pageNumber=' + ${currentPage}} + '&stringFind=' + ${stringFind}">STOCK</a></th>
+							<th><a
+								th:href="@{'/listElement?sortField=category&pageNumber=' + ${currentPage}}+ '&stringFind=' + ${stringFind}">CATEGORIA</a></th>
+
+
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="element :${listElement}">
+							<td th:text="${element.id}"></td>
+							<td th:text="${element.name}"></td>
+							<td th:text="${element.description}"></td>
+							<td th:text="${element.price}"></td>
+							<td th:text="${element.stock}"></td>
+							<td th:text="${element.category}"></td>
+							<td><label class="col-md-4 control-label" for="singlebutton"></label>
+								<a th:href="@{'delElement'(id=${element.id})}">
+									<button id="singlebutton" name="singlebutton"
+										class="btn btn-primary">Borrar</button>
+							</a> <a th:href="@{'editElement'(id=${element.id})}">
+									<button id="singlebutton" name="singlebutton"
+										class="btn btn-primary">Editar</button>
+							</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div>
+				Total Items: <a
+					th:href="@{'/listElement?pageNumber=1&sizeNumber=' + ${totalItems} + '&sortField=' + ${sortField}} + '&stringFind=' + ${stringFind}"
+					th:text="${totalItems}" /><a th:if="${currentPage > 1}"
+					th:href="@{'/listElement?pageNumber=1&sortField=' + ${sortField}} + '&stringFind=' + ${stringFind}">
+					First</a> <span th:unless="${currentPage > 1}">First</span> <a
+					th:if="${currentPage > 1}"
+					th:href="@{'/listElement?pageNumber=' + ${currentPage - 1} + '&sortField=' + ${sortField}} + '&stringFind=' + ${stringFind}">Previous</a>
+				<span th:unless="${currentPage > 1}">Previous</span> <span
+					th:unless="${currentPage > 1}">Previous</span> <span
+					th:each="i: ${#numbers.sequence(1, totalPages)}"> <a
+					th:if="${currentPage != i}"
+					th:href="@{'/listElement?pageNumber=' + ${i} + '&sortField=' + ${sortField}}+ '&stringFind=' + ${stringFind}"
+					th:text="${i}"></a> <span th:unless="${currentPage != i}"
+					th:text="${i}"></span> &nbsp;
+				</span> <a th:if="${currentPage < totalPages}"
+					th:href="@{'/listElement?pageNumber=' + ${currentPage + 1} + '&sortField=' + ${sortField}} + '&stringFind=' + ${stringFind}">Next</a>
+				<span th:unless="${currentPage < totalPages}">Next</span> <a
+					th:if="${currentPage < totalPages}"
+					th:href="@{'/listElement?pageNumber=' + ${totalPages} + '&sortField=' + ${sortField}} + '&stringFind=' + ${stringFind}">Last</a>
+				<span th:unless="${currentPage < totalPages}">Last</span>
+			</div>
+
+			<!-- Optional JavaScript; choose one of the two! -->
+
+			<!-- Option 1: Bootstrap Bundle with Popper -->
+			<script
+				src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+				integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+				crossorigin="anonymous"></script>
+			<!-- Option 2: Separate Popper and Bootstrap JS -->
+			<!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.2/dist/umd/popper.min.js" integrity="sha384-q9CRHqZndzlxGLOj+xrdLDJa9ittGte1NksRmgJKeCV9DrM7Kz868XYqsKWPpAmn" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+</body>
+</html>
